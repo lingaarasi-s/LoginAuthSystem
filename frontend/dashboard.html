@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+  <h2>Welcome <span id="user"></span>!</h2>
+  <button onclick="getProfile()">View Profile</button>
+  <button onclick="logout()">Logout</button>
+
+  <p id="profile"></p>
+
+  <script>
+    const username = localStorage.getItem("username");
+    if (!username) window.location.href = "index.html";
+    else document.getElementById("user").innerText = username;
+
+    async function getProfile() {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/auth/profile", {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + token }
+      });
+      const data = await res.json();
+      document.getElementById("profile").innerText = data.message || data.error;
+    }
+
+    function logout() {
+      localStorage.removeItem("username");
+      localStorage.removeItem("token");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
